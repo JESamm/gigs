@@ -1,0 +1,1343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GigConnect - Student Gig Marketplace</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/styles.css?v=7">
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="#/home" class="nav-logo">
+        <i class="fas fa-bolt"></i>
+        <span>GigConnect</span>
+      </a>
+      <div class="nav-links" id="navLinks">
+        <a href="#/home" class="nav-link active" data-page="home">Home</a>
+        <a href="#/gigs" class="nav-link" data-page="gigs">Browse Gigs</a>
+        <a href="#/how-it-works" class="nav-link" data-page="how-it-works">How It Works</a>
+      </div>
+      <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle dark mode">
+        <i class="fas fa-moon"></i>
+        <i class="fas fa-sun"></i>
+      </button>
+      <div class="nav-actions" id="navActions">
+        <button class="btn btn-ghost" onclick="showModal('loginModal')">Log In</button>
+        <button class="btn btn-primary" onclick="showModal('registerModal')">Sign Up</button>
+      </div>
+      <div class="nav-actions-auth" id="navActionsAuth" style="display:none">
+        <div class="notification-bell" onclick="toggleNotifications()">
+          <i class="fas fa-bell"></i>
+          <span class="notification-badge" id="notifBadge" style="display:none">0</span>
+        </div>
+        <div class="user-menu" id="userMenu">
+          <button class="user-menu-btn" onclick="toggleUserMenu()">
+            <div class="user-avatar" id="userAvatar">U</div>
+            <span id="userName">User</span>
+            <i class="fas fa-chevron-down"></i>
+          </button>
+          <div class="user-dropdown" id="userDropdown">
+            <a href="#/dashboard"><i class="fas fa-th-large"></i> Dashboard</a>
+            <a href="#/profile"><i class="fas fa-user"></i> Profile</a>
+            <a href="#/messages"><i class="fas fa-comments"></i> Messages <span class="chat-badge" id="chatBadge" style="display:none">0</span></a>
+            <a href="#/my-gigs" id="myGigsLink"><i class="fas fa-briefcase"></i> My Gigs</a>
+            <a href="#/applications" id="myAppsLink"><i class="fas fa-file-alt"></i> Applications</a>
+            <a href="#/payments"><i class="fas fa-wallet"></i> Payments</a>
+            <div class="dropdown-divider"></div>
+            <a href="#" onclick="logout(); return false;"><i class="fas fa-sign-out-alt"></i> Log Out</a>
+          </div>
+        </div>
+      </div>
+      <button class="mobile-toggle" id="mobileToggle" onclick="toggleMobileMenu()">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Notification Panel -->
+  <div class="notification-panel" id="notifPanel" style="display:none">
+    <div class="notif-header">
+      <h3>Notifications</h3>
+      <button class="btn btn-ghost btn-sm" onclick="markAllRead()">Mark all read</button>
+    </div>
+    <div class="notif-list" id="notifList">
+      <p class="notif-empty">No notifications yet</p>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main id="mainContent">
+    <!-- HOME PAGE -->
+    <div id="page-home" class="page active">
+      <section class="hero">
+        <div class="hero-bg">
+          <div class="hero-shape shape-1"></div>
+          <div class="hero-shape shape-2"></div>
+          <div class="hero-shape shape-3"></div>
+        </div>
+        <div class="container">
+          <div class="hero-content">
+            <div class="hero-badge">
+              <i class="fas fa-rocket"></i>
+              <span>The #1 Student Gig Platform</span>
+            </div>
+            <h1>Connect Students with <span class="gradient-text">Real Opportunities</span></h1>
+            <p class="hero-subtitle">Post gigs, find talented students from top schools, and get work done. Students earn money while building their portfolios.</p>
+            <div class="hero-actions" id="heroActions">
+              <button class="btn btn-primary btn-lg guest-only" onclick="showModal('registerModal')">
+                <i class="fas fa-user-plus"></i> Get Started Free
+              </button>
+              <a href="#/gigs" class="btn btn-outline btn-lg">
+                <i class="fas fa-search"></i> Browse Gigs
+              </a>
+            </div>
+            <div class="hero-stats" id="heroStats">
+              <div class="hero-stat">
+                <strong id="statOpenGigs">—</strong>
+                <span>Open Gigs</span>
+              </div>
+              <div class="hero-stat">
+                <strong id="statStudents">—</strong>
+                <span>Students</span>
+              </div>
+              <div class="hero-stat">
+                <strong id="statEmployers">—</strong>
+                <span>Employers</span>
+              </div>
+              <div class="hero-stat">
+                <strong id="statCompleted">—</strong>
+                <span>Completed Gigs</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="features" id="features">
+        <div class="container">
+          <div class="section-header">
+            <span class="section-badge">Why GigConnect?</span>
+            <h2>Built for Students & Employers</h2>
+            <p>A seamless platform designed to make hiring students and finding gigs effortless.</p>
+          </div>
+          <div class="features-grid">
+            <div class="feature-card">
+              <div class="feature-icon" style="background: linear-gradient(135deg, #667eea, #764ba2)">
+                <i class="fas fa-graduation-cap"></i>
+              </div>
+              <h3>Verified Students</h3>
+              <p>Students from accredited schools apply with verified academic credentials and portfolios.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon" style="background: linear-gradient(135deg, #f093fb, #f5576c)">
+                <i class="fas fa-shield-alt"></i>
+              </div>
+              <h3>Secure Payments</h3>
+              <p>Funds are held in escrow and released only when the gig is completed to satisfaction.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon" style="background: linear-gradient(135deg, #4facfe, #00f2fe)">
+                <i class="fas fa-bolt"></i>
+              </div>
+              <h3>Quick Matching</h3>
+              <p>Smart filters help you find the right student or gig in seconds based on skills and availability.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon" style="background: linear-gradient(135deg, #43e97b, #38f9d7)">
+                <i class="fas fa-star"></i>
+              </div>
+              <h3>Ratings & Reviews</h3>
+              <p>Build trust with transparent reviews from completed gigs on both sides.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon" style="background: linear-gradient(135deg, #fa709a, #fee140)">
+                <i class="fas fa-globe"></i>
+              </div>
+              <h3>Remote & On-site</h3>
+              <p>Choose remote, hybrid, or on-site gigs that fit your schedule and location.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon" style="background: linear-gradient(135deg, #a18cd1, #fbc2eb)">
+                <i class="fas fa-chart-line"></i>
+              </div>
+              <h3>Track Earnings</h3>
+              <p>Students track their earnings and employers monitor spending — all in one dashboard.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="how-section" id="how-it-works-section">
+        <div class="container">
+          <div class="section-header">
+            <span class="section-badge">Simple Process</span>
+            <h2>How It Works</h2>
+            <p>Get started in three simple steps.</p>
+          </div>
+          <div class="steps-grid">
+            <div class="step-card">
+              <div class="step-number">1</div>
+              <h3>Create Your Account</h3>
+              <p>Sign up as an employer to post gigs, or as a student to start applying. It only takes a minute.</p>
+            </div>
+            <div class="step-connector"><i class="fas fa-arrow-right"></i></div>
+            <div class="step-card">
+              <div class="step-number">2</div>
+              <h3>Post or Apply</h3>
+              <p>Employers post gigs with details and budget. Students browse and apply to the ones that match their skills.</p>
+            </div>
+            <div class="step-connector"><i class="fas fa-arrow-right"></i></div>
+            <div class="step-card">
+              <div class="step-number">3</div>
+              <h3>Complete & Get Paid</h3>
+              <p>Once the gig is done and approved, payment is released securely to the student's account.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="cta-section" id="ctaSection">
+        <div class="container">
+          <div class="cta-card">
+            <h2>Ready to Get Started?</h2>
+            <p>Join thousands of students and employers on GigConnect today.</p>
+            <div class="cta-actions">
+              <button class="btn btn-white btn-lg" onclick="showModal('registerModal')">
+                <i class="fas fa-user-plus"></i> Create Free Account
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- BROWSE GIGS PAGE -->
+    <div id="page-gigs" class="page">
+      <section class="page-header">
+        <div class="container">
+          <h1><i class="fas fa-search"></i> Browse Gigs</h1>
+          <p>Find the perfect gig that matches your skills</p>
+        </div>
+      </section>
+      <section class="container">
+        <div class="gigs-layout">
+          <aside class="gigs-sidebar">
+            <div class="filter-group">
+              <h3><i class="fas fa-filter"></i> Filters</h3>
+              <div class="filter-item">
+                <label>Search</label>
+                <input type="text" id="gigSearch" class="form-input" placeholder="Keywords..." oninput="debounceSearch()">
+              </div>
+              <div class="filter-item">
+                <label>Category</label>
+                <select id="gigCategory" class="form-select" onchange="loadGigs()">
+                  <option value="">All Categories</option>
+                  <option value="web-development">Web Development</option>
+                  <option value="mobile-development">Mobile Development</option>
+                  <option value="design">Design & Creative</option>
+                  <option value="writing">Writing & Content</option>
+                  <option value="marketing">Marketing</option>
+                  <option value="data-science">Data Science</option>
+                  <option value="video-photo">Video & Photography</option>
+                  <option value="tutoring">Tutoring</option>
+                  <option value="admin">Administrative</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              <div class="filter-item">
+                <label>Location Type</label>
+                <select id="gigLocationType" class="form-select" onchange="loadGigs()">
+                  <option value="">All Types</option>
+                  <option value="remote">Remote</option>
+                  <option value="onsite">On-site</option>
+                  <option value="hybrid">Hybrid</option>
+                </select>
+              </div>
+              <div class="filter-item">
+                <label>Min Pay (KSh)</label>
+                <input type="number" id="gigMinPay" class="form-input" placeholder="0" oninput="debounceSearch()">
+              </div>
+              <div class="filter-item">
+                <label>Max Pay (KSh)</label>
+                <input type="number" id="gigMaxPay" class="form-input" placeholder="Any" oninput="debounceSearch()">
+              </div>
+              <button class="btn btn-outline btn-block" onclick="clearFilters()">
+                <i class="fas fa-times"></i> Clear Filters
+              </button>
+            </div>
+          </aside>
+          <div class="gigs-content">
+            <div class="gigs-header">
+              <span id="gigsCount">0 gigs found</span>
+            </div>
+            <div class="gigs-grid" id="gigsGrid">
+              <div class="loading-spinner"><div class="spinner"></div><p>Loading gigs...</p></div>
+            </div>
+            <div class="pagination" id="gigsPagination"></div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- GIG DETAIL PAGE -->
+    <div id="page-gig-detail" class="page">
+      <section class="container">
+        <div class="gig-detail" id="gigDetail">
+          <div class="loading-spinner"><div class="spinner"></div></div>
+        </div>
+      </section>
+    </div>
+
+    <!-- DASHBOARD PAGE -->
+    <div id="page-dashboard" class="page">
+      <section class="page-header">
+        <div class="container">
+          <h1><i class="fas fa-th-large"></i> Dashboard</h1>
+          <p id="dashboardWelcome">Welcome back!</p>
+        </div>
+      </section>
+      <section class="container">
+        <div class="dashboard-stats" id="dashboardStats"></div>
+        <div class="dashboard-content" id="dashboardContent"></div>
+      </section>
+    </div>
+
+    <!-- POST GIG PAGE (Employer) -->
+    <div id="page-post-gig" class="page">
+      <section class="page-header">
+        <div class="container">
+          <h1><i class="fas fa-plus-circle"></i> Post a New Gig</h1>
+          <p>Fill in the details to find the perfect student for your project</p>
+        </div>
+      </section>
+      <section class="container">
+        <div class="form-card">
+          <form id="postGigForm" onsubmit="handlePostGig(event)">
+            <div class="form-grid">
+              <div class="form-group full-width">
+                <label class="form-label">Gig Title *</label>
+                <input type="text" name="title" class="form-input" placeholder="e.g., Build a Landing Page for My Startup" required>
+              </div>
+              <div class="form-group full-width">
+                <label class="form-label">Description *</label>
+                <textarea name="description" class="form-textarea" rows="6" placeholder="Describe the gig in detail: what needs to be done, deliverables, requirements..." required></textarea>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Category *</label>
+                <select name="category" class="form-select" required>
+                  <option value="">Select a category</option>
+                  <option value="web-development">Web Development</option>
+                  <option value="mobile-development">Mobile Development</option>
+                  <option value="design">Design & Creative</option>
+                  <option value="writing">Writing & Content</option>
+                  <option value="marketing">Marketing</option>
+                  <option value="data-science">Data Science</option>
+                  <option value="video-photo">Video & Photography</option>
+                  <option value="tutoring">Tutoring</option>
+                  <option value="admin">Administrative</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Skills Required</label>
+                <input type="text" name="skills_required" class="form-input" placeholder="e.g., React, Node.js, Figma">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Pay Amount (KSh) *</label>
+                <input type="number" name="pay_amount" class="form-input" min="1" step="1" placeholder="5000" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Pay Type</label>
+                <select name="pay_type" class="form-select">
+                  <option value="fixed">Fixed Price</option>
+                  <option value="hourly">Hourly Rate</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Location Type</label>
+                <select name="location_type" class="form-select">
+                  <option value="remote">Remote</option>
+                  <option value="onsite">On-site</option>
+                  <option value="hybrid">Hybrid</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Location</label>
+                <input type="text" name="location" class="form-input" placeholder="City, State (for on-site/hybrid)">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Duration</label>
+                <input type="text" name="duration" class="form-input" placeholder="e.g., 2 weeks, 1 month">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Deadline</label>
+                <input type="date" name="deadline" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Max Applicants</label>
+                <input type="number" name="max_applicants" class="form-input" value="10" min="1" max="100">
+              </div>
+            </div>
+            <div class="form-actions">
+              <a href="#/dashboard" class="btn btn-ghost">Cancel</a>
+              <button type="submit" class="btn btn-primary btn-lg">
+                <i class="fas fa-paper-plane"></i> Post Gig
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
+    </div>
+
+    <!-- MY GIGS PAGE (Employer) -->
+    <div id="page-my-gigs" class="page">
+      <section class="page-header">
+        <div class="container">
+          <div class="page-header-flex">
+            <div>
+              <h1><i class="fas fa-briefcase"></i> My Gigs</h1>
+              <p>Manage your posted gigs</p>
+            </div>
+            <a href="#/post-gig" class="btn btn-primary">
+              <i class="fas fa-plus"></i> Post New Gig
+            </a>
+          </div>
+        </div>
+      </section>
+      <section class="container">
+        <div id="myGigsList" class="gigs-list"></div>
+      </section>
+    </div>
+
+    <!-- APPLICATIONS PAGE -->
+    <div id="page-applications" class="page">
+      <section class="page-header">
+        <div class="container">
+          <h1><i class="fas fa-file-alt"></i> Applications</h1>
+          <p id="applicationsSubtitle">Track your gig applications</p>
+        </div>
+      </section>
+      <section class="container">
+        <div id="applicationsList" class="applications-list"></div>
+      </section>
+    </div>
+
+    <!-- GIG APPLICATIONS (Employer viewing applicants) -->
+    <div id="page-gig-applications" class="page">
+      <section class="page-header">
+        <div class="container">
+          <h1><i class="fas fa-users"></i> Applicants</h1>
+          <p id="gigApplicantsTitle">Review applicants for your gig</p>
+        </div>
+      </section>
+      <section class="container">
+        <div id="gigApplicantsList" class="applications-list"></div>
+      </section>
+    </div>
+
+    <!-- PAYMENTS PAGE -->
+    <div id="page-payments" class="page">
+      <section class="page-header">
+        <div class="container">
+          <h1><i class="fas fa-wallet"></i> Payments</h1>
+          <p>Track all your transactions</p>
+        </div>
+      </section>
+      <section class="container">
+        <div id="paymentsList" class="payments-list"></div>
+      </section>
+    </div>
+
+    <!-- PROFILE PAGE -->
+    <div id="page-profile" class="page">
+      <section class="page-header">
+        <div class="container">
+          <h1><i class="fas fa-user-cog"></i> Edit Profile</h1>
+          <p>Keep your profile up to date</p>
+        </div>
+      </section>
+      <section class="container">
+        <div class="form-card" id="profileForm"></div>
+      </section>
+    </div>
+
+    <!-- MESSAGES / CHAT PAGE -->
+    <div id="page-messages" class="page">
+      <section class="page-header">
+        <div class="container">
+          <h1><i class="fas fa-comments"></i> Messages</h1>
+          <p>Chat securely with employers and students on GigConnect</p>
+        </div>
+      </section>
+      <section class="container">
+        <div class="chat-safety-banner" id="chatSafetyBanner">
+          <div class="safety-icon"><i class="fas fa-shield-alt"></i></div>
+          <div class="safety-text">
+            <strong>Stay Safe on GigConnect</strong>
+            <p>Always communicate and negotiate through our platform. Never share personal details, make payments, or agree to work outside GigConnect. We can only protect you when conversations happen here.</p>
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="document.getElementById('chatSafetyBanner').style.display='none'"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="chat-layout">
+          <div class="chat-sidebar" id="chatSidebar">
+            <div class="chat-sidebar-header">
+              <h3>Conversations</h3>
+              <span class="chat-unread-total" id="chatUnreadTotal" style="display:none">0</span>
+            </div>
+            <div class="chat-search">
+              <i class="fas fa-search"></i>
+              <input type="text" placeholder="Search conversations..." oninput="filterConversations(this.value)">
+            </div>
+            <div class="chat-conversation-list" id="chatConversationList">
+              <div class="loading-spinner"><div class="spinner"></div></div>
+            </div>
+          </div>
+          <div class="chat-main" id="chatMain">
+            <div class="chat-empty-state" id="chatEmptyState">
+              <i class="fas fa-comments" style="font-size:3rem;color:var(--gray-300)"></i>
+              <h3>Select a conversation</h3>
+              <p>Choose a conversation from the sidebar or start a new one from a gig applicant's profile.</p>
+            </div>
+            <div class="chat-active" id="chatActive" style="display:none">
+              <div class="chat-header" id="chatHeader"></div>
+              <div class="chat-messages" id="chatMessages"></div>
+              <div class="chat-safety-tip" id="chatSafetyTip" style="display:none">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>This message may contain contact info. Remember: keep all communication on GigConnect for your protection.</span>
+                <button onclick="this.parentElement.style.display='none'" class="btn btn-ghost btn-sm"><i class="fas fa-times"></i></button>
+              </div>
+              <div class="chat-input-area">
+                <form onsubmit="handleSendMessage(event)" class="chat-input-form">
+                  <input type="text" id="chatInput" class="chat-input" placeholder="Type a message..." autocomplete="off" required>
+                  <button type="submit" class="btn btn-primary chat-send-btn"><i class="fas fa-paper-plane"></i></button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- PRICING PAGE -->
+    <div id="page-pricing" class="page">
+      <section class="static-hero">
+        <div class="container">
+          <h1>Simple, Transparent Pricing</h1>
+          <p class="static-hero-sub">No hidden fees. GigConnect takes a small platform fee so everyone wins.</p>
+        </div>
+      </section>
+      <section class="container static-content">
+        <div class="pricing-grid">
+          <div class="pricing-card">
+            <div class="pricing-badge">Students</div>
+            <div class="pricing-price"><span class="price-currency">KSh</span>0<span class="price-period">/forever</span></div>
+            <p class="pricing-desc">Always free for students</p>
+            <ul class="pricing-features">
+              <li><i class="fas fa-check"></i> Unlimited gig applications</li>
+              <li><i class="fas fa-check"></i> Build your portfolio</li>
+              <li><i class="fas fa-check"></i> Direct messaging with employers</li>
+              <li><i class="fas fa-check"></i> Skill-based matching</li>
+              <li><i class="fas fa-check"></i> Secure payments</li>
+              <li><i class="fas fa-check"></i> Reviews &amp; ratings</li>
+            </ul>
+            <button class="btn btn-outline btn-lg btn-block" onclick="showModal('registerModal')">Sign Up Free</button>
+          </div>
+          <div class="pricing-card pricing-featured">
+            <div class="pricing-popular">Most Popular</div>
+            <div class="pricing-badge">Employers — Starter</div>
+            <div class="pricing-price"><span class="price-currency">KSh</span>0<span class="price-period">/per gig</span></div>
+            <p class="pricing-desc">5% platform fee on completed payments</p>
+            <ul class="pricing-features">
+              <li><i class="fas fa-check"></i> Post up to 5 gigs / month</li>
+              <li><i class="fas fa-check"></i> Access student talent pool</li>
+              <li><i class="fas fa-check"></i> Applicant management</li>
+              <li><i class="fas fa-check"></i> Secure escrow payments</li>
+              <li><i class="fas fa-check"></i> Employer dashboard</li>
+              <li><i class="fas fa-check"></i> Email support</li>
+            </ul>
+            <button class="btn btn-primary btn-lg btn-block" onclick="showModal('registerModal')">Get Started</button>
+          </div>
+          <div class="pricing-card">
+            <div class="pricing-badge">Employers — Pro</div>
+            <div class="pricing-price"><span class="price-currency">KSh</span>4,900<span class="price-period">/month</span></div>
+            <p class="pricing-desc">3% platform fee on completed payments</p>
+            <ul class="pricing-features">
+              <li><i class="fas fa-check"></i> Unlimited gig posts</li>
+              <li><i class="fas fa-check"></i> Featured gig placement</li>
+              <li><i class="fas fa-check"></i> Priority applicant matching</li>
+              <li><i class="fas fa-check"></i> Advanced analytics</li>
+              <li><i class="fas fa-check"></i> Dedicated account manager</li>
+              <li><i class="fas fa-check"></i> Priority support</li>
+            </ul>
+            <button class="btn btn-outline btn-lg btn-block" onclick="showModal('registerModal')">Contact Sales</button>
+          </div>
+        </div>
+        <div class="pricing-faq">
+          <h2>Frequently Asked Questions</h2>
+          <div class="faq-grid">
+            <div class="faq-item">
+              <h4><i class="fas fa-question-circle"></i> How does the platform fee work?</h4>
+              <p>When an employer releases payment for a completed gig, GigConnect takes a small percentage as a platform fee. The student receives the rest directly.</p>
+            </div>
+            <div class="faq-item">
+              <h4><i class="fas fa-question-circle"></i> Can I cancel anytime?</h4>
+              <p>Absolutely. Pro plans can be cancelled at any time. You'll retain access until the end of your billing period.</p>
+            </div>
+            <div class="faq-item">
+              <h4><i class="fas fa-question-circle"></i> Are there any upfront costs for students?</h4>
+              <p>Never. GigConnect is and always will be free for students. We believe in removing barriers to opportunity.</p>
+            </div>
+            <div class="faq-item">
+              <h4><i class="fas fa-question-circle"></i> How are payments secured?</h4>
+              <p>We use an escrow system. Employers fund gigs upfront, and payment is released to students only after work is approved.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- HELP CENTER PAGE -->
+    <div id="page-help" class="page">
+      <section class="static-hero">
+        <div class="container">
+          <h1>Help Center</h1>
+          <p class="static-hero-sub">Find answers, guides, and support to make the most of GigConnect.</p>
+          <div class="help-search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Search for help articles..." class="help-search-input" id="helpSearchInput" oninput="filterHelpArticles()">
+          </div>
+        </div>
+      </section>
+      <section class="container static-content">
+        <div class="help-grid" id="helpGrid">
+          <div class="help-category" data-help="getting-started">
+            <div class="help-icon"><i class="fas fa-rocket"></i></div>
+            <h3>Getting Started</h3>
+            <ul>
+              <li>How to create an account</li>
+              <li>Setting up your profile</li>
+              <li>Verifying your school email</li>
+              <li>Understanding roles (Student vs Employer)</li>
+            </ul>
+          </div>
+          <div class="help-category" data-help="posting-gigs">
+            <div class="help-icon"><i class="fas fa-briefcase"></i></div>
+            <h3>Posting Gigs</h3>
+            <ul>
+              <li>How to post your first gig</li>
+              <li>Writing effective gig descriptions</li>
+              <li>Setting fair pay rates</li>
+              <li>Managing applicants</li>
+            </ul>
+          </div>
+          <div class="help-category" data-help="applying">
+            <div class="help-icon"><i class="fas fa-paper-plane"></i></div>
+            <h3>Applying for Gigs</h3>
+            <ul>
+              <li>How to apply for a gig</li>
+              <li>Writing a strong cover letter</li>
+              <li>Tracking your applications</li>
+              <li>Withdrawal &amp; reapplication</li>
+            </ul>
+          </div>
+          <div class="help-category" data-help="payments">
+            <div class="help-icon"><i class="fas fa-credit-card"></i></div>
+            <h3>Payments &amp; Billing</h3>
+            <ul>
+              <li>How payments work</li>
+              <li>Setting up your payout method</li>
+              <li>Understanding platform fees</li>
+              <li>Requesting a refund</li>
+            </ul>
+          </div>
+          <div class="help-category" data-help="safety">
+            <div class="help-icon"><i class="fas fa-shield-alt"></i></div>
+            <h3>Safety &amp; Trust</h3>
+            <ul>
+              <li>Our verification process</li>
+              <li>Reporting a user</li>
+              <li>Dispute resolution</li>
+              <li>Data privacy practices</li>
+            </ul>
+          </div>
+          <div class="help-category" data-help="account">
+            <div class="help-icon"><i class="fas fa-user-cog"></i></div>
+            <h3>Account Settings</h3>
+            <ul>
+              <li>Updating your profile</li>
+              <li>Changing your password</li>
+              <li>Notification preferences</li>
+              <li>Deleting your account</li>
+            </ul>
+          </div>
+        </div>
+        <div class="help-contact-cta">
+          <i class="fas fa-headset"></i>
+          <h3>Still need help?</h3>
+          <p>Our support team is here for you. Reach out and we'll get back to you within 24 hours.</p>
+          <a href="#/contact" class="btn btn-primary"><i class="fas fa-envelope"></i> Contact Support</a>
+        </div>
+      </section>
+    </div>
+
+    <!-- CONTACT US PAGE -->
+    <div id="page-contact" class="page">
+      <section class="static-hero">
+        <div class="container">
+          <h1>Contact Us</h1>
+          <p class="static-hero-sub">Have a question or feedback? We'd love to hear from you.</p>
+        </div>
+      </section>
+      <section class="container static-content">
+        <div class="contact-layout">
+          <div class="contact-form-wrap">
+            <h2>Send us a message</h2>
+            <form class="contact-form" onsubmit="handleContactForm(event)">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label">Full Name</label>
+                  <input type="text" class="form-input" placeholder="John Doe" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Email Address</label>
+                  <input type="email" class="form-input" placeholder="you@example.com" required>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Subject</label>
+                <select class="form-input">
+                  <option value="general">General Inquiry</option>
+                  <option value="support">Technical Support</option>
+                  <option value="billing">Billing Question</option>
+                  <option value="partnership">Partnership Opportunity</option>
+                  <option value="feedback">Feedback</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Message</label>
+                <textarea class="form-input" rows="6" placeholder="Tell us how we can help..." required></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary btn-lg"><i class="fas fa-paper-plane"></i> Send Message</button>
+            </form>
+          </div>
+          <div class="contact-info-panel">
+            <div class="contact-info-card">
+              <div class="contact-info-item">
+                <div class="contact-info-icon"><i class="fas fa-envelope"></i></div>
+                <div>
+                  <h4>Email</h4>
+                  <p>support@gigconnect.com</p>
+                </div>
+              </div>
+              <div class="contact-info-item">
+                <div class="contact-info-icon"><i class="fas fa-clock"></i></div>
+                <div>
+                  <h4>Response Time</h4>
+                  <p>Within 24 hours</p>
+                </div>
+              </div>
+              <div class="contact-info-item">
+                <div class="contact-info-icon"><i class="fas fa-map-marker-alt"></i></div>
+                <div>
+                  <h4>Office</h4>
+                  <p>San Francisco, CA</p>
+                </div>
+              </div>
+            </div>
+            <div class="contact-social-card">
+              <h4>Follow Us</h4>
+              <div class="contact-social-links">
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-linkedin"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-github"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- TERMS OF SERVICE PAGE -->
+    <div id="page-terms" class="page">
+      <section class="static-hero">
+        <div class="container">
+          <h1>Terms of Service</h1>
+          <p class="static-hero-sub">Last updated: March 1, 2026</p>
+        </div>
+      </section>
+      <section class="container static-content">
+        <div class="legal-content">
+          <div class="legal-toc">
+            <h3>Table of Contents</h3>
+            <ol>
+              <li><a href="#terms-acceptance">Acceptance of Terms</a></li>
+              <li><a href="#terms-eligibility">Eligibility</a></li>
+              <li><a href="#terms-accounts">User Accounts</a></li>
+              <li><a href="#terms-gigs">Gig Postings &amp; Applications</a></li>
+              <li><a href="#terms-payments">Payments</a></li>
+              <li><a href="#terms-conduct">User Conduct</a></li>
+              <li><a href="#terms-ip">Intellectual Property</a></li>
+              <li><a href="#terms-termination">Termination</a></li>
+              <li><a href="#terms-liability">Limitation of Liability</a></li>
+              <li><a href="#terms-changes">Changes to Terms</a></li>
+            </ol>
+          </div>
+          <div class="legal-body">
+            <div id="terms-acceptance">
+              <h2>1. Acceptance of Terms</h2>
+              <p>By accessing or using GigConnect ("the Platform"), you agree to be bound by these Terms of Service. If you do not agree to all of these terms, you may not use the Platform.</p>
+            </div>
+            <div id="terms-eligibility">
+              <h2>2. Eligibility</h2>
+              <p>You must be at least 18 years old or have parental/guardian consent to use GigConnect. Students must be currently enrolled in an accredited educational institution. Employers must represent a legitimate business or organisation.</p>
+            </div>
+            <div id="terms-accounts">
+              <h2>3. User Accounts</h2>
+              <p>You are responsible for maintaining the confidentiality of your account credentials. You agree to provide accurate, current, and complete information during registration. GigConnect reserves the right to suspend or terminate accounts that violate these terms.</p>
+            </div>
+            <div id="terms-gigs">
+              <h2>4. Gig Postings &amp; Applications</h2>
+              <p>Employers are solely responsible for the content of their gig postings. All gigs must comply with applicable labour laws and offer fair compensation. Students apply to gigs at their own discretion. GigConnect does not guarantee employment or gig completion.</p>
+            </div>
+            <div id="terms-payments">
+              <h2>5. Payments</h2>
+              <p>All payments are processed through our secure escrow system. Employers fund gigs before work begins. Students receive payment once work is approved. Platform fees are non-refundable once a gig is completed. Disputes will be mediated by the GigConnect team.</p>
+            </div>
+            <div id="terms-conduct">
+              <h2>6. User Conduct</h2>
+              <p>Users agree not to post misleading or fraudulent content, harass other users, attempt to circumvent platform payments, use the platform for illegal activities, or create multiple accounts for deceptive purposes.</p>
+            </div>
+            <div id="terms-ip">
+              <h2>7. Intellectual Property</h2>
+              <p>Work product created during a gig belongs to the employer unless otherwise agreed in writing. GigConnect retains all rights to the platform, branding, and proprietary technology.</p>
+            </div>
+            <div id="terms-termination">
+              <h2>8. Termination</h2>
+              <p>GigConnect may terminate or suspend your account at any time for violations of these Terms. Upon termination, any pending payments will be handled according to our dispute resolution process.</p>
+            </div>
+            <div id="terms-liability">
+              <h2>9. Limitation of Liability</h2>
+              <p>GigConnect is provided "as is" without warranties of any kind. We are not liable for any indirect, incidental, or consequential damages arising from your use of the Platform. Our total liability is limited to the amount of platform fees you have paid in the last 12 months.</p>
+            </div>
+            <div id="terms-changes">
+              <h2>10. Changes to Terms</h2>
+              <p>We reserve the right to modify these Terms at any time. Changes will be posted on this page with an updated revision date. Continued use of the Platform constitutes acceptance of revised Terms.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ABOUT US PAGE -->
+    <div id="page-about" class="page">
+      <section class="static-hero">
+        <div class="container">
+          <h1>About GigConnect</h1>
+          <p class="static-hero-sub">Bridging the gap between student talent and real-world opportunities.</p>
+        </div>
+      </section>
+      <section class="container static-content">
+        <div class="about-mission">
+          <div class="about-mission-text">
+            <h2>Our Mission</h2>
+            <p>GigConnect was born from a simple idea: every student deserves access to meaningful work experience before they graduate. We believe the traditional job market is broken for young people — too many barriers, too few opportunities, and not enough flexibility.</p>
+            <p>We created a platform where employers can tap into a rich pool of motivated student talent, and where students can earn money, build real portfolios, and gain the experience that opens doors after graduation.</p>
+          </div>
+          <div class="about-mission-visual">
+            <div class="about-stat-grid">
+              <div class="about-stat">
+                <div class="about-stat-icon"><i class="fas fa-university"></i></div>
+                <h3>50+</h3>
+                <p>Partner Schools</p>
+              </div>
+              <div class="about-stat">
+                <div class="about-stat-icon"><i class="fas fa-users"></i></div>
+                <h3>15,000+</h3>
+                <p>Active Students</p>
+              </div>
+              <div class="about-stat">
+                <div class="about-stat-icon"><i class="fas fa-briefcase"></i></div>
+                <h3>8,000+</h3>
+                <p>Gigs Completed</p>
+              </div>
+              <div class="about-stat">
+                <div class="about-stat-icon"><i class="fas fa-star"></i></div>
+                <h3>4.8/5</h3>
+                <p>Average Rating</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="about-values">
+          <h2>Our Values</h2>
+          <div class="values-grid">
+            <div class="value-card">
+              <div class="value-icon"><i class="fas fa-hand-holding-heart"></i></div>
+              <h3>Student-First</h3>
+              <p>Every decision we make prioritises the student experience. Free access, fair pay, and real growth opportunities.</p>
+            </div>
+            <div class="value-card">
+              <div class="value-icon"><i class="fas fa-lock"></i></div>
+              <h3>Trust &amp; Safety</h3>
+              <p>Verified accounts, secure escrow payments, and a dedicated trust team ensure a safe marketplace for everyone.</p>
+            </div>
+            <div class="value-card">
+              <div class="value-icon"><i class="fas fa-equals"></i></div>
+              <h3>Equal Opportunity</h3>
+              <p>We believe talent is equally distributed. Our platform removes biases and connects people based on skills and merit.</p>
+            </div>
+            <div class="value-card">
+              <div class="value-icon"><i class="fas fa-lightbulb"></i></div>
+              <h3>Innovation</h3>
+              <p>We're constantly improving our matching algorithms, payment systems, and user experience to stay ahead.</p>
+            </div>
+          </div>
+        </div>
+        <div class="about-team">
+          <h2>Leadership Team</h2>
+          <div class="team-grid">
+            <div class="team-member">
+              <div class="team-avatar">
+                <img src="/uploads/leaders-profile/sammy.jpeg" alt="Sammy Juma" class="team-photo">
+              </div>
+              <h4>Sammy Juma</h4>
+              <p class="team-role">CEO &amp; Co-Founder</p>
+              <p class="team-bio">Head of campus recruiting at TMU.</p>
+            </div>
+            <div class="team-member">
+              <div class="team-avatar">
+                <img src="/uploads/leaders-profile/Brian.jpeg" alt="Brian Nyamboga" class="team-photo">
+              </div>
+              <h4>Brian Nyamboga</h4>
+              <p class="team-role">CTO &amp; Co-Founder</p>
+              <p class="team-bio">Stripe engineer. Built payment systems processing $10B+ annually.</p>
+            </div>
+            <div class="team-member">
+              <div class="team-avatar">
+                <img src="/uploads/leaders-profile/timothy.jpeg" alt="Timothy Junior" class="team-photo">
+              </div>
+              <h4>Timothy Junior</h4>
+              <p class="team-role">VP of Product</p>
+              <p class="team-bio">Backend engineer. Passionate about connecting people.</p>
+            </div>
+            <div class="team-member">
+              <div class="team-avatar">
+                <img src="/images/team/tony-nyauke.svg" alt="Tony Nyauke" class="team-photo">
+              </div>
+              <h4>Tony Nyauke</h4>
+              <p class="team-role">Head of Trust &amp; Safety</p>
+              <p class="team-bio">Profia instute ICT expert.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- BLOG PAGE -->
+    <div id="page-blog" class="page">
+      <section class="static-hero">
+        <div class="container">
+          <h1>Blog</h1>
+          <p class="static-hero-sub">Tips, stories, and insights from the GigConnect community.</p>
+        </div>
+      </section>
+      <section class="container static-content">
+        <div class="blog-grid">
+          <article class="blog-card blog-featured">
+            <div class="blog-card-img"><i class="fas fa-graduation-cap"></i></div>
+            <div class="blog-card-body">
+              <div class="blog-meta">
+                <span class="blog-tag">Student Success</span>
+                <span class="blog-date"><i class="fas fa-calendar"></i> Mar 5, 2026</span>
+              </div>
+              <h2>How Alex Earned $5,000 While Finishing His Degree</h2>
+              <p>What started as a weekend project turned into a career-launching experience. Alex shares how GigConnect helped him build a portfolio that landed him a full-time offer before graduation.</p>
+              <span class="blog-read-more">Read more <i class="fas fa-arrow-right"></i></span>
+            </div>
+          </article>
+          <article class="blog-card">
+            <div class="blog-card-img"><i class="fas fa-chart-line"></i></div>
+            <div class="blog-card-body">
+              <div class="blog-meta">
+                <span class="blog-tag">Platform Updates</span>
+                <span class="blog-date"><i class="fas fa-calendar"></i> Feb 28, 2026</span>
+              </div>
+              <h3>New: Advanced Matching Algorithm</h3>
+              <p>Our latest update uses skills-based matching to connect the right students with the right gigs, faster than ever.</p>
+              <span class="blog-read-more">Read more <i class="fas fa-arrow-right"></i></span>
+            </div>
+          </article>
+          <article class="blog-card">
+            <div class="blog-card-img"><i class="fas fa-lightbulb"></i></div>
+            <div class="blog-card-body">
+              <div class="blog-meta">
+                <span class="blog-tag">Tips &amp; Advice</span>
+                <span class="blog-date"><i class="fas fa-calendar"></i> Feb 20, 2026</span>
+              </div>
+              <h3>5 Tips for Writing a Winning Gig Application</h3>
+              <p>Stand out from the crowd with these proven strategies that top-rated students use to land their dream gigs.</p>
+              <span class="blog-read-more">Read more <i class="fas fa-arrow-right"></i></span>
+            </div>
+          </article>
+          <article class="blog-card">
+            <div class="blog-card-img"><i class="fas fa-building"></i></div>
+            <div class="blog-card-body">
+              <div class="blog-meta">
+                <span class="blog-tag">For Employers</span>
+                <span class="blog-date"><i class="fas fa-calendar"></i> Feb 15, 2026</span>
+              </div>
+              <h3>Why Top Startups Hire Student Talent</h3>
+              <p>From fresh perspectives to cost-effective solutions, discover why hundreds of startups choose GigConnect for their projects.</p>
+              <span class="blog-read-more">Read more <i class="fas fa-arrow-right"></i></span>
+            </div>
+          </article>
+          <article class="blog-card">
+            <div class="blog-card-img"><i class="fas fa-shield-alt"></i></div>
+            <div class="blog-card-body">
+              <div class="blog-meta">
+                <span class="blog-tag">Trust &amp; Safety</span>
+                <span class="blog-date"><i class="fas fa-calendar"></i> Feb 10, 2026</span>
+              </div>
+              <h3>Our Commitment to a Safe Marketplace</h3>
+              <p>Learn how our verification processes, escrow payments, and dedicated trust team keep GigConnect secure for everyone.</p>
+              <span class="blog-read-more">Read more <i class="fas fa-arrow-right"></i></span>
+            </div>
+          </article>
+          <article class="blog-card">
+            <div class="blog-card-img"><i class="fas fa-globe"></i></div>
+            <div class="blog-card-body">
+              <div class="blog-meta">
+                <span class="blog-tag">Community</span>
+                <span class="blog-date"><i class="fas fa-calendar"></i> Feb 1, 2026</span>
+              </div>
+              <h3>GigConnect Expands to 50 New Universities</h3>
+              <p>We're thrilled to announce partnerships with 50 new universities across the country, opening doors for thousands more students.</p>
+              <span class="blog-read-more">Read more <i class="fas fa-arrow-right"></i></span>
+            </div>
+          </article>
+        </div>
+      </section>
+    </div>
+
+    <!-- CAREERS PAGE -->
+    <div id="page-careers" class="page">
+      <section class="static-hero">
+        <div class="container">
+          <h1>Careers at GigConnect</h1>
+          <p class="static-hero-sub">Join our team and help shape the future of student employment.</p>
+        </div>
+      </section>
+      <section class="container static-content">
+        <div class="careers-intro">
+          <div class="careers-intro-text">
+            <h2>Why Work With Us?</h2>
+            <p>At GigConnect, you'll work alongside passionate people building technology that directly impacts thousands of students' lives. We offer competitive compensation, flexible remote-first work, and a culture that values impact over hours.</p>
+          </div>
+          <div class="careers-perks">
+            <div class="perk"><i class="fas fa-home"></i><span>Remote-First</span></div>
+            <div class="perk"><i class="fas fa-heartbeat"></i><span>Full Benefits</span></div>
+            <div class="perk"><i class="fas fa-chart-bar"></i><span>Equity Package</span></div>
+            <div class="perk"><i class="fas fa-plane"></i><span>Unlimited PTO</span></div>
+            <div class="perk"><i class="fas fa-book"></i><span>Learning Budget</span></div>
+            <div class="perk"><i class="fas fa-laptop"></i><span>Equipment Stipend</span></div>
+          </div>
+        </div>
+        <div class="careers-openings">
+          <h2>Open Positions</h2>
+          <div class="job-list">
+            <div class="job-card">
+              <div class="job-info">
+                <h3>Senior Full-Stack Engineer</h3>
+                <div class="job-meta">
+                  <span><i class="fas fa-code"></i> Engineering</span>
+                  <span><i class="fas fa-map-marker-alt"></i> Remote</span>
+                  <span><i class="fas fa-clock"></i> Full-time</span>
+                </div>
+              </div>
+              <span class="job-salary">KSh 1.5M – 2M</span>
+            </div>
+            <div class="job-card">
+              <div class="job-info">
+                <h3>Product Designer</h3>
+                <div class="job-meta">
+                  <span><i class="fas fa-palette"></i> Design</span>
+                  <span><i class="fas fa-map-marker-alt"></i> Remote</span>
+                  <span><i class="fas fa-clock"></i> Full-time</span>
+                </div>
+              </div>
+              <span class="job-salary">KSh 1.2M – 1.6M</span>
+            </div>
+            <div class="job-card">
+              <div class="job-info">
+                <h3>Growth Marketing Manager</h3>
+                <div class="job-meta">
+                  <span><i class="fas fa-bullhorn"></i> Marketing</span>
+                  <span><i class="fas fa-map-marker-alt"></i> San Francisco / Remote</span>
+                  <span><i class="fas fa-clock"></i> Full-time</span>
+                </div>
+              </div>
+              <span class="job-salary">KSh 1.1M – 1.5M</span>
+            </div>
+            <div class="job-card">
+              <div class="job-info">
+                <h3>University Partnerships Lead</h3>
+                <div class="job-meta">
+                  <span><i class="fas fa-handshake"></i> Partnerships</span>
+                  <span><i class="fas fa-map-marker-alt"></i> Remote</span>
+                  <span><i class="fas fa-clock"></i> Full-time</span>
+                </div>
+              </div>
+              <span class="job-salary">KSh 1M – 1.4M</span>
+            </div>
+            <div class="job-card">
+              <div class="job-info">
+                <h3>Customer Support Specialist</h3>
+                <div class="job-meta">
+                  <span><i class="fas fa-headset"></i> Support</span>
+                  <span><i class="fas fa-map-marker-alt"></i> Remote</span>
+                  <span><i class="fas fa-clock"></i> Full-time</span>
+                </div>
+              </div>
+              <span class="job-salary">KSh 550K – 750K</span>
+            </div>
+          </div>
+        </div>
+        <div class="careers-cta">
+          <h3>Don't see the right role?</h3>
+          <p>We're always looking for exceptional people. Send us your resume and tell us how you'd contribute.</p>
+          <a href="#/contact" class="btn btn-primary btn-lg"><i class="fas fa-envelope"></i> Get in Touch</a>
+        </div>
+      </section>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="#/home" class="nav-logo">
+            <i class="fas fa-bolt"></i>
+            <span>GigConnect</span>
+          </a>
+          <p>Connecting students with real-world opportunities. Build your career while you study.</p>
+        </div>
+        <div class="footer-links">
+          <h4>Platform</h4>
+          <a href="#/gigs">Browse Gigs</a>
+          <a href="#/how-it-works">How It Works</a>
+          <a href="#/pricing">Pricing</a>
+        </div>
+        <div class="footer-links">
+          <h4>Support</h4>
+          <a href="#/help">Help Center</a>
+          <a href="#/contact">Contact Us</a>
+          <a href="#/terms">Terms of Service</a>
+        </div>
+        <div class="footer-links">
+          <h4>Company</h4>
+          <a href="#/about">About Us</a>
+          <a href="#/blog">Blog</a>
+          <a href="#/careers">Careers</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 GigConnect. All rights reserved.</p>
+        <div class="footer-social">
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-linkedin"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-github"></i></a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Login Modal -->
+  <div class="modal" id="loginModal">
+    <div class="modal-overlay" onclick="closeModal('loginModal')"></div>
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeModal('loginModal')"><i class="fas fa-times"></i></button>
+      <div class="modal-header">
+        <h2>Welcome Back</h2>
+        <p>Log in to your GigConnect account</p>
+      </div>
+      <form onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="email" id="loginEmail" class="form-input" placeholder="your@email.com" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" id="loginPassword" class="form-input" placeholder="Enter your password" required>
+        </div>
+        <div class="form-group" id="login2faGroup" style="display:none">
+          <label class="form-label"><i class="fas fa-shield-alt"></i> Two-Factor Code</label>
+          <input type="text" id="login2faCode" class="form-input" placeholder="Enter 6-digit code from your authenticator" maxlength="6" pattern="[0-9]{6}" inputmode="numeric" autocomplete="one-time-code">
+        </div>
+        <button type="submit" class="btn btn-primary btn-block btn-lg" id="loginBtn">
+          <i class="fas fa-sign-in-alt"></i> Log In
+        </button>
+      </form>
+      <div class="social-auth-divider">
+        <span>or continue with</span>
+      </div>
+      <div class="social-auth-buttons">
+        <button class="btn-social btn-google" onclick="socialLogin('google')"><i class="fab fa-google"></i> Google</button>
+        <button class="btn-social btn-github" onclick="socialLogin('github')"><i class="fab fa-github"></i> GitHub</button>
+        <button class="btn-social btn-twitter" onclick="socialLogin('twitter')" disabled title="Coming soon"><i class="fab fa-x-twitter"></i> X</button>
+        <button class="btn-social btn-linkedin" onclick="socialLogin('linkedin')" disabled title="Coming soon"><i class="fab fa-linkedin-in"></i> LinkedIn</button>
+      </div>
+      <p class="modal-footer-text">
+        Don't have an account? <a href="#" onclick="switchModal('loginModal', 'registerModal')">Sign up</a>
+      </p>
+    </div>
+  </div>
+
+  
+  <div class="modal" id="registerModal">
+    <div class="modal-overlay" onclick="closeModal('registerModal')"></div>
+    <div class="modal-content modal-lg">
+      <button class="modal-close" onclick="closeModal('registerModal')"><i class="fas fa-times"></i></button>
+      <div class="modal-header">
+        <h2>Create Your Account</h2>
+        <p>Join GigConnect and get started today</p>
+      </div>
+      <form onsubmit="handleRegister(event)">
+        <div class="role-selector">
+          <label class="role-option">
+            <input type="radio" name="role" value="student" checked onchange="toggleRegFields()">
+            <div class="role-card">
+              <i class="fas fa-graduation-cap"></i>
+              <strong>I'm a Student</strong>
+              <span>Looking for gigs</span>
+            </div>
+          </label>
+          <label class="role-option">
+            <input type="radio" name="role" value="employer" onchange="toggleRegFields()">
+            <div class="role-card">
+              <i class="fas fa-building"></i>
+              <strong>I'm an Employer</strong>
+              <span>Looking to hire students</span>
+            </div>
+          </label>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Full Name *</label>
+            <input type="text" id="regName" class="form-input" placeholder="John Doe" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email *</label>
+            <input type="email" id="regEmail" class="form-input" placeholder="your@email.com" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Password *</label>
+            <input type="password" id="regPassword" class="form-input" placeholder="Min. 6 characters" minlength="6" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone</label>
+            <input type="tel" id="regPhone" class="form-input" placeholder="+1 (555) 000-0000">
+          </div>
+        </div>
+        <!-- Student Fields -->
+        <div id="studentFields">
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">School Name *</label>
+              <input type="text" id="regSchool" class="form-input" placeholder="e.g., MIT, Stanford, UCLA">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Major</label>
+              <input type="text" id="regMajor" class="form-input" placeholder="e.g., Computer Science">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Graduation Year</label>
+              <input type="number" id="regGradYear" class="form-input" placeholder="2027" min="2024" max="2035">
+            </div>
+          </div>
+        </div>
+        <!-- Employer Fields -->
+        <div id="employerFields" style="display:none">
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Company Name</label>
+              <input type="text" id="regCompany" class="form-input" placeholder="Your company name">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Industry</label>
+              <select id="regIndustry" class="form-select">
+                <option value="">Select industry</option>
+                <option value="technology">Technology</option>
+                <option value="finance">Finance</option>
+                <option value="healthcare">Healthcare</option>
+                <option value="education">Education</option>
+                <option value="retail">Retail</option>
+                <option value="marketing">Marketing</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Location</label>
+              <input type="text" id="regLocation" class="form-input" placeholder="City, State">
+            </div>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block btn-lg" id="registerBtn">
+          <i class="fas fa-user-plus"></i> Create Account
+        </button>
+      </form>
+      <div class="social-auth-divider">
+        <span>or sign up with</span>
+      </div>
+      <div class="social-auth-buttons">
+        <button class="btn-social btn-google" onclick="socialLogin('google')"><i class="fab fa-google"></i> Google</button>
+        <button class="btn-social btn-github" onclick="socialLogin('github')"><i class="fab fa-github"></i> GitHub</button>
+        <button class="btn-social btn-twitter" onclick="socialLogin('twitter')" disabled title="Coming soon"><i class="fab fa-x-twitter"></i> X</button>
+        <button class="btn-social btn-linkedin" onclick="socialLogin('linkedin')" disabled title="Coming soon"><i class="fab fa-linkedin-in"></i> LinkedIn</button>
+      </div>
+      <p class="modal-footer-text">
+        Already have an account? <a href="#" onclick="switchModal('registerModal', 'loginModal')">Log in</a>
+      </p>
+    </div>
+  </div>
+
+  <!-- Apply Modal -->
+  <div class="modal" id="applyModal">
+    <div class="modal-overlay" onclick="closeModal('applyModal')"></div>
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeModal('applyModal')"><i class="fas fa-times"></i></button>
+      <div class="modal-header">
+        <h2>Apply for This Gig</h2>
+        <p id="applyGigTitle"></p>
+      </div>
+      <form onsubmit="handleApply(event)">
+        <input type="hidden" id="applyGigId">
+        <div class="form-group">
+          <label class="form-label">Cover Letter</label>
+          <textarea id="applyCoverLetter" class="form-textarea" rows="5" placeholder="Explain why you're the best fit for this gig..."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Your Proposed Amount ($)</label>
+          <input type="number" id="applyAmount" class="form-input" min="1" step="0.01" placeholder="Leave blank to accept posted amount">
+        </div>
+        <button type="submit" class="btn btn-primary btn-block btn-lg" id="applyBtn">
+          <i class="fas fa-paper-plane"></i> Submit Application
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notifications -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="js/app.js?v=7"></script>
+</body>
+</html>
