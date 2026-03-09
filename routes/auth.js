@@ -64,7 +64,7 @@ router.post('/register', (req, res) => {
     });
   } catch (err) {
     console.error('Register error:', err);
-    res.status(500).json({ error: 'Registration failed. Please try again.' });
+    res.status(500).json({ error: 'Registration failed. Please try again.', debug: err.message });
   }
 });
 
