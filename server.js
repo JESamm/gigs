@@ -13,6 +13,13 @@ const { configurePassport } = require('./config/passport');
 const NODE_ENV = process.env.NODE_ENV || 'development';
 const isProduction = NODE_ENV === 'production';
 
+// Ensure JWT_SECRET is set (generate a fallback for convenience, warn in logs)
+if (!process.env.JWT_SECRET) {
+  const crypto = require('crypto');
+  process.env.JWT_SECRET = crypto.randomBytes(48).toString('hex');
+  console.warn('  ⚠️  JWT_SECRET not set — using auto-generated secret (tokens will reset on restart)');
+}
+
 async function startServer() {
   // Initialize database before anything else
   await initDatabase();
