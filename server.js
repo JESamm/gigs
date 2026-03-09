@@ -126,6 +126,7 @@ async function startServer() {
     });
   });
 
+  // Start listening
   const server = app.listen(PORT, () => {
     console.log(`\n  ✨ GigConnect server running at http://localhost:${PORT}`);
     console.log(`  📦 Environment: ${NODE_ENV}\n`);
@@ -141,7 +142,6 @@ async function startServer() {
       console.log('  ✅ Database saved. Server closed.');
       process.exit(0);
     });
-    // Force close after 10s if connections hang
     setTimeout(() => { process.exit(1); }, 10000);
   };
 
