@@ -427,6 +427,7 @@ function renderPage(page, data) {
     case 'applications': loadMyApplications(); break;
     case 'gig-applications': loadGigApplications(data); break;
     case 'payments': loadPayments(); break;
+    case 'submissions': loadSubmissions(data); break;
     case 'profile': loadProfile(); break;
     case 'messages': loadConversations(data); break;
     case 'how-it-works':
@@ -639,13 +640,32 @@ function getGigActions(gig) {
     </button>`;
   }
 
-  if (currentUser.role === 'employer' && currentUser.id === gig.employer_id) {
+  if (currentUser.role === 'student' && gig.status === 'in_progress') {
     return `
+      <div style="margin-top:20px;display:flex;flex-direction:column;gap:8px">
+        <button class="btn btn-primary btn-block btn-lg" onclick="navigate('submissions', ${gig.id})">
+          <i class="fas fa-upload"></i> Submit Work
+        </button>
+        <button class="btn btn-outline btn-block" onclick="navigate('submissions', ${gig.id})">
+          <i class="fas fa-list"></i> View Submissions
+        </button>
+      </div>`;
+  }
+
+  if (currentUser.role === 'employer' && currentUser.id === gig.employer_id) {
+    let buttons = `
       <div style="margin-top:20px;display:flex;flex-direction:column;gap:8px">
         <button class="btn btn-primary btn-block" onclick="navigate('gig-applications', ${gig.id})">
           <i class="fas fa-users"></i> View Applicants (${gig.application_count})
-        </button>
-      </div>`;
+        </button>`;
+    if (gig.status === 'in_progress') {
+      buttons += `
+        <button class="btn btn-outline btn-block" onclick="navigate('submissions', ${gig.id})">
+          <i class="fas fa-tasks"></i> View Submissions
+        </button>`;
+    }
+    buttons += '</div>';
+    return buttons;
   }
 
   return '';
@@ -870,6 +890,11 @@ async function loadMyApplications() {
           ${app.status === 'pending' ? `
             <button class="btn btn-danger btn-sm" onclick="withdrawApplication(${app.id})">
               <i class="fas fa-times"></i> Withdraw
+            </button>
+          ` : ''}
+          ${app.status === 'accepted' ? `
+            <button class="btn btn-primary btn-sm" onclick="navigate('submissions', ${app.gig_id})">
+              <i class="fas fa-upload"></i> Submit Work
             </button>
           ` : ''}
         </div>
@@ -1187,6 +1212,267 @@ async function releasePayment(paymentId) {
   } catch (err) {
     showToast(err.message, 'error');
   }
+}
+
+// ==========================================
+//  Task Submissions
+// ==========================================
+
+async function loadSubmissions(gigId) {
+  if (!currentUser) return;
+
+  const container = document.getElementById('submissionsList');
+  const formEl = document.getElementById('submitWorkForm');
+  container.innerHTML = '<div class="loading-spinner"><div class="spinner"></div></div>';
+
+  // Set gig id on form
+  document.getElementById('submitGigId').value = gigId;
+
+  // Show submit form only for students
+  if (currentUser.role === 'student') {
+    formEl.style.display = 'block';
+    document.getElementById('submissionsSubtitle').textContent = 'Upload and track your work';
+  } else {
+    formEl.style.display = 'none';
+    document.getElementById('submissionsSubtitle').textContent = 'Review student submissions';
+  }
+
+  // Setup file input preview
+  setupFileUpload();
+
+  try {
+    const res = await fetch(`${API}/api/submissions/gig/${gigId}`, { headers: getHeaders() });
+    const submissions = await res.json();
+
+    if (!res.ok) throw new Error(submissions.error || 'Failed to load submissions');
+
+    if (submissions.length === 0) {
+      container.innerHTML = `
+        <div class="empty-state">
+          <i class="fas fa-cloud-upload-alt"></i>
+          <h3>No submissions yet</h3>
+          <p>${currentUser.role === 'student' ? 'Upload your completed work above' : 'The student hasn\'t submitted work yet'}</p>
+        </div>`;
+      return;
+    }
+
+    container.innerHTML = submissions.map(sub => `
+      <div class="submission-card submission-${sub.status}">
+        <div class="submission-header">
+          <div class="submission-info">
+            <span class="submission-number">#${sub.id}</span>
+            <span class="submission-date"><i class="fas fa-clock"></i> ${timeAgo(sub.created_at)}</span>
+          </div>
+          <span class="badge badge-${sub.status === 'revision_requested' ? 'pending' : sub.status}">${formatSubmissionStatus(sub.status)}</span>
+        </div>
+        ${sub.description ? `<div class="submission-description">${escapeHtml(sub.description)}</div>` : ''}
+        ${sub.file_urls && sub.file_urls.length > 0 ? `
+          <div class="submission-files">
+            <h4><i class="fas fa-paperclip"></i> Attached Files</h4>
+            <div class="file-grid">
+              ${sub.file_urls.map(f => `
+                <a href="${f}" target="_blank" class="file-attachment" download>
+                  <i class="fas ${getFileIcon(f)}"></i>
+                  <span>${getFileName(f)}</span>
+                </a>
+              `).join('')}
+            </div>
+          </div>
+        ` : ''}
+        ${sub.employer_feedback ? `
+          <div class="submission-feedback">
+            <h4><i class="fas fa-comment-dots"></i> Employer Feedback</h4>
+            <p>${escapeHtml(sub.employer_feedback)}</p>
+          </div>
+        ` : ''}
+        ${currentUser.role === 'employer' && sub.status === 'submitted' ? `
+          <div class="submission-actions">
+            <button class="btn btn-success btn-sm" onclick="openReviewModal(${sub.id}, 'approved')">
+              <i class="fas fa-check"></i> Approve
+            </button>
+            <button class="btn btn-warning btn-sm" onclick="openReviewModal(${sub.id}, 'revision_requested')">
+              <i class="fas fa-redo"></i> Request Revision
+            </button>
+            <button class="btn btn-danger btn-sm" onclick="openReviewModal(${sub.id}, 'rejected')">
+              <i class="fas fa-times"></i> Reject
+            </button>
+          </div>
+        ` : ''}
+      </div>
+    `).join('');
+  } catch (err) {
+    container.innerHTML = `<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><h3>Failed to load submissions</h3><p>${escapeHtml(err.message)}</p></div>`;
+  }
+}
+
+function setupFileUpload() {
+  const input = document.getElementById('submitFiles');
+  const fileList = document.getElementById('fileList');
+  const area = document.getElementById('fileUploadArea');
+
+  if (!input) return;
+
+  // Remove old listeners by cloning
+  const newInput = input.cloneNode(true);
+  input.parentNode.replaceChild(newInput, input);
+
+  newInput.addEventListener('change', () => {
+    updateFileList(newInput, fileList);
+  });
+
+  // Drag and drop
+  area.addEventListener('dragover', (e) => { e.preventDefault(); area.classList.add('drag-over'); });
+  area.addEventListener('dragleave', () => area.classList.remove('drag-over'));
+  area.addEventListener('drop', (e) => {
+    e.preventDefault();
+    area.classList.remove('drag-over');
+    newInput.files = e.dataTransfer.files;
+    updateFileList(newInput, fileList);
+  });
+}
+
+function updateFileList(input, fileList) {
+  if (!input.files || input.files.length === 0) {
+    fileList.innerHTML = '';
+    return;
+  }
+  if (input.files.length > 5) {
+    showToast('Maximum 5 files allowed', 'error');
+    input.value = '';
+    fileList.innerHTML = '';
+    return;
+  }
+  fileList.innerHTML = Array.from(input.files).map(f => `
+    <div class="file-item">
+      <i class="fas ${getFileIconByName(f.name)}"></i>
+      <span>${escapeHtml(f.name)}</span>
+      <span class="file-size">${formatFileSize(f.size)}</span>
+    </div>
+  `).join('');
+}
+
+async function handleSubmitWork(e) {
+  e.preventDefault();
+  if (!currentUser || currentUser.role !== 'student') return;
+
+  const gigId = document.getElementById('submitGigId').value;
+  const description = document.getElementById('submitDescription').value.trim();
+  const files = document.getElementById('submitFiles').files;
+
+  if (!description && files.length === 0) {
+    showToast('Please add a description or upload files', 'error');
+    return;
+  }
+
+  const btn = document.getElementById('submitWorkBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+
+  const formData = new FormData();
+  formData.append('gig_id', gigId);
+  if (description) formData.append('description', description);
+  for (const file of files) {
+    formData.append('files', file);
+  }
+
+  try {
+    const res = await fetch(`${API}/api/submissions`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${token}` },
+      body: formData
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error);
+
+    showToast('Work submitted successfully! 📤', 'success');
+    document.getElementById('submitDescription').value = '';
+    document.getElementById('submitFiles').value = '';
+    document.getElementById('fileList').innerHTML = '';
+    loadSubmissions(gigId);
+  } catch (err) {
+    showToast(err.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Work';
+  }
+}
+
+function openReviewModal(submissionId, status) {
+  const statusText = status === 'approved' ? 'Approve' : status === 'revision_requested' ? 'Request Revision' : 'Reject';
+  const feedback = prompt(`${statusText} this submission?\n\nAdd feedback for the student (optional):`);
+
+  if (feedback === null) return; // cancelled
+
+  reviewSubmission(submissionId, status, feedback);
+}
+
+async function reviewSubmission(submissionId, status, feedback) {
+  try {
+    const res = await fetch(`${API}/api/submissions/${submissionId}/review`, {
+      method: 'PUT',
+      headers: getHeaders(),
+      body: JSON.stringify({ status, employer_feedback: feedback || '' })
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error);
+
+    const emoji = status === 'approved' ? '✅' : status === 'revision_requested' ? '🔄' : '❌';
+    showToast(`Submission ${formatSubmissionStatus(status)} ${emoji}`, 'success');
+
+    // Reload submissions
+    const gigId = document.getElementById('submitGigId').value;
+    if (gigId) loadSubmissions(gigId);
+  } catch (err) {
+    showToast(err.message, 'error');
+  }
+}
+
+function formatSubmissionStatus(status) {
+  switch (status) {
+    case 'submitted': return 'Submitted';
+    case 'revision_requested': return 'Revision Requested';
+    case 'approved': return 'Approved';
+    case 'rejected': return 'Rejected';
+    default: return capitalize(status);
+  }
+}
+
+function getFileIcon(url) {
+  const ext = url.split('.').pop().toLowerCase();
+  return getIconForExt(ext);
+}
+
+function getFileIconByName(name) {
+  const ext = name.split('.').pop().toLowerCase();
+  return getIconForExt(ext);
+}
+
+function getIconForExt(ext) {
+  const icons = {
+    pdf: 'fa-file-pdf', doc: 'fa-file-word', docx: 'fa-file-word',
+    xls: 'fa-file-excel', xlsx: 'fa-file-excel',
+    ppt: 'fa-file-powerpoint', pptx: 'fa-file-powerpoint',
+    jpg: 'fa-file-image', jpeg: 'fa-file-image', png: 'fa-file-image', gif: 'fa-file-image',
+    zip: 'fa-file-archive', rar: 'fa-file-archive', '7z': 'fa-file-archive',
+    mp4: 'fa-file-video',
+    py: 'fa-file-code', js: 'fa-file-code', html: 'fa-file-code', css: 'fa-file-code', json: 'fa-file-code',
+    txt: 'fa-file-alt', csv: 'fa-file-csv', md: 'fa-file-alt'
+  };
+  return icons[ext] || 'fa-file';
+}
+
+function getFileName(url) {
+  return decodeURIComponent(url.split('/').pop());
+}
+
+function formatFileSize(bytes) {
+  if (bytes === 0) return '0 B';
+  const k = 1024;
+  const sizes = ['B', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
 }
 
 // ==========================================

@@ -37,6 +37,7 @@ async function startServer() {
   const notificationRoutes = require('./routes/notifications');
   const dashboardRoutes = require('./routes/dashboard');
   const chatRoutes = require('./routes/chat');
+  const submissionRoutes = require('./routes/submissions');
 
   const app = express();
   const PORT = process.env.PORT || 3000;
@@ -119,6 +120,7 @@ async function startServer() {
   app.use('/api/notifications', notificationRoutes);
   app.use('/api/dashboard', dashboardRoutes);
   app.use('/api/chat', chatRoutes);
+  app.use('/api/submissions', submissionRoutes);
 
   // Serve frontend for all other routes (SPA)
   app.get('*', (req, res) => {

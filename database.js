@@ -152,7 +152,19 @@ async function initDatabase() {
       read INTEGER DEFAULT 0,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       FOREIGN KEY (conversation_id) REFERENCES conversations(id) ON DELETE CASCADE,
-      FOREIGN KEY (sender_id) REFERENCES users(id) ON DELETE CASCADE)`
+      FOREIGN KEY (sender_id) REFERENCES users(id) ON DELETE CASCADE)`,
+    `CREATE TABLE IF NOT EXISTS submissions (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      gig_id INTEGER NOT NULL,
+      student_id INTEGER NOT NULL,
+      description TEXT,
+      file_urls TEXT,
+      status TEXT DEFAULT 'submitted' CHECK(status IN ('submitted','revision_requested','approved','rejected')),
+      employer_feedback TEXT,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (gig_id) REFERENCES gigs(id) ON DELETE CASCADE,
+      FOREIGN KEY (student_id) REFERENCES users(id) ON DELETE CASCADE)`
   ];
 
   for (const sql of tables) {

@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://cdnjs.cloudflare.com">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link rel="stylesheet" href="css/styles.css?v=9">
+  <link rel="stylesheet" href="css/styles.css?v=10">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 </head>
 <body>
@@ -469,6 +469,54 @@
       </section>
       <section class="container">
         <div id="paymentsList" class="payments-list"></div>
+      </section>
+    </div>
+
+    <!-- SUBMISSIONS PAGE -->
+    <div id="page-submissions" class="page">
+      <section class="page-header">
+        <div class="container">
+          <div class="page-header-flex">
+            <div>
+              <h1><i class="fas fa-upload"></i> <span id="submissionsTitle">Submissions</span></h1>
+              <p id="submissionsSubtitle">Upload and track your work</p>
+            </div>
+            <button class="btn btn-ghost btn-sm" id="submissionsBackBtn" onclick="history.back()">
+              <i class="fas fa-arrow-left"></i> Back
+            </button>
+          </div>
+        </div>
+      </section>
+      <section class="container">
+        <!-- Submit Work Form (student only) -->
+        <div id="submitWorkForm" class="form-card" style="display:none; margin-bottom: 2rem;">
+          <h3><i class="fas fa-paper-plane"></i> Submit Your Work</h3>
+          <form onsubmit="handleSubmitWork(event)">
+            <input type="hidden" id="submitGigId">
+            <div class="form-group">
+              <label class="form-label">Description / Notes</label>
+              <textarea id="submitDescription" class="form-input" rows="4" placeholder="Describe what you've done, any notes for the employer..."></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Upload Files (up to 5 files, 20MB each)</label>
+              <div class="file-upload-area" id="fileUploadArea">
+                <input type="file" id="submitFiles" multiple accept=".jpg,.jpeg,.png,.gif,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip,.rar,.7z,.txt,.csv,.mp4,.py,.js,.html,.css,.json,.md" style="display:none">
+                <div class="file-upload-prompt" onclick="document.getElementById('submitFiles').click()">
+                  <i class="fas fa-cloud-upload-alt"></i>
+                  <p>Click to select files or drag & drop</p>
+                  <span class="text-muted">Images, documents, archives, code files</span>
+                </div>
+                <div id="fileList" class="file-list"></div>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary" id="submitWorkBtn">
+              <i class="fas fa-paper-plane"></i> Submit Work
+            </button>
+          </form>
+        </div>
+
+        <!-- Submissions List -->
+        <div id="submissionsList" class="submissions-list"></div>
       </section>
     </div>
 
@@ -1357,6 +1405,6 @@
   <!-- Toast Notifications -->
   <div class="toast-container" id="toastContainer"></div>
 
-  <script src="js/app.js?v=9"></script>
+  <script src="js/app.js?v=10"></script>
 </body>
 </html>
