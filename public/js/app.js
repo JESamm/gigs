@@ -35,6 +35,15 @@ document.addEventListener('DOMContentLoaded', () => {
   loadHeroStats();
   routeFromHash(); // Navigate to the page specified in the URL hash (defaults to home)
 
+  // Dismiss splash screen
+  const splash = document.getElementById('splashScreen');
+  if (splash) {
+    setTimeout(() => {
+      splash.classList.add('hide');
+      setTimeout(() => splash.remove(), 700);
+    }, 1200);
+  }
+
   // Close dropdowns on outside click
   document.addEventListener('click', (e) => {
     if (!e.target.closest('.user-menu')) {
