@@ -37,14 +37,14 @@ async function startServer() {
   // Trust proxy (needed for rate limiting behind reverse proxies like Render, Railway, Heroku)
   app.set('trust proxy', 1);
 
-  // Security headers
+  // Security headers (relaxed for CDN/proxy compatibility)
   app.use(helmet({
-    contentSecurityPolicy: false,     // allow inline scripts in SPA
-    crossOriginEmbedderPolicy: false  // allow loading external resources (OAuth, fonts, etc.)
+    contentSecurityPolicy: false,           // allow inline scripts in SPA
+    crossOriginEmbedderPolicy: false,       // allow loading external resources (OAuth, fonts, etc.)
+    crossOriginResourcePolicy: false        // allow CDN/proxy to cache & serve resources
   }));
 
-  // Gzip compression
-  app.use(compression());
+  // Note: compression handled by Render's Cloudflare CDN — no need for server-side compression
 
   // Access logging
   app.use(morgan(isProduction ? 'combined' : 'dev'));
